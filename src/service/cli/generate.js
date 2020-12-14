@@ -9,7 +9,7 @@ const { CATEGORIES,
         DEFAULT_COUNT,
         PictureRestrict,
         FILE_NAME,
-        ExitCode: { success, exit } } = require('../constants');
+        ExitCode, } = require('../constants');
 const { getRandomInt,
         getPictureFileName,
         shuffle } = require(`../utils`);
@@ -33,7 +33,7 @@ module.exports = {
 
         if (countOffer > 1000) {
           console.error('Не больше 1000 объявлений.');
-          return process.exit(exit);
+          return process.exit(ExitCode.EXIT);
         }
 
         const content = JSON.stringify(generateOffers(countOffer));
@@ -41,11 +41,11 @@ module.exports = {
         fs.writeFile(FILE_NAME, content, err => {
             if (err) {
                 console.error(`Can't write data to file...`);
-                process.exit(exit);
+                process.exit(ExitCode.EXIT);
             }
 
             console.info(`Operation success. File created.`);
-            process.exit(success);
+            process.exit(ExitCode.SUCCESS);
         })
     }
 }

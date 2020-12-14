@@ -17,8 +17,8 @@ const FILE_NAME = `mocks.json`;
 const DEFAULT_COMMAND = '--help';
 
 const ExitCode = {
-    success: 0,
-    exit: 1,
+    SUCCESS: 0,
+    EXIT: 1,
 };
 
 const TITLES = [
