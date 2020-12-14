@@ -1,3 +1,5 @@
+'use strict';
+
 const PictureRestrict = {
    MIN: 1,
    MAX: 16,
@@ -8,7 +10,7 @@ const SumRestrict = {
     MAX: 100000,
 }
 
-USER_ARGV_INDEX = 2;
+const USER_ARGV_INDEX = 2;
 
 const DEFAULT_COUNT = 1;
 const FILE_NAME = `mocks.json`;
