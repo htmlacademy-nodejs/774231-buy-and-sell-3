@@ -16,7 +16,7 @@ const shuffle = (someArray) => {
 };
 
 const getPictureFileName = (number) => {
-  return `item${number < 10 ? "0" + number : number}.jpg`
+  return `item${number < 10 ? `0` + number : number}.jpg`;
 };
 
 module.exports = {
