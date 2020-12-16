@@ -1,5 +1,8 @@
 'use strict';
 
+const util = require(`util`);
+const fs = require(`fs`);
+
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -15,6 +18,25 @@ const shuffle = (someArray) => {
   return someArray;
 };
 
+const readFilePromise = util.promisify((path, dataFormatter = (data) => data, cb) => {
+  fs.readFile(path, `utf8`, (err, data) => {
+    if (err) {
+      cb(err);
+    } else {
+      cb(null, dataFormatter(data));
+    }
+  });
+});
+
+const dataFormatter = (data) => {
+  return data.split(`\n`);
+};
+
+const getData = async (path) => {
+  const data = await readFilePromise(path, dataFormatter);
+  return data;
+};
+
 const getPictureFileName = (number) => {
   return `item${number < 10 ? `0` + number : number}.jpg`;
 };
@@ -23,4 +45,6 @@ module.exports = {
   getRandomInt,
   shuffle,
   getPictureFileName,
+  getData,
+  readFilePromise,
 };

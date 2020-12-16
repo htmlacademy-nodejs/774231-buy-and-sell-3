@@ -3,12 +3,11 @@
 const fs = require(`fs`);
 const util = require(`util`);
 const chalk = require(`chalk`);
+const path = require(`path`);
 
 const writeFilePromise = util.promisify(fs.writeFile);
 
-const {CATEGORIES,
-  SENTENCES,
-  TITLES,
+const {
   OfferType,
   SumRestrict,
   DEFAULT_COUNT,
@@ -17,18 +16,24 @@ const {CATEGORIES,
   ExitCode} = require(`../constants`);
 const {getRandomInt,
   getPictureFileName,
+  getData,
   shuffle} = require(`../utils`);
 
-const generateOffers = (count) => (
-  Array(count).fill({}).map(() => ({
+
+const generateOffers = async (count) => {
+  const TITLES = await getData(path.join(`data`, `titles.txt`));
+  const SENTENCES = await getData(path.join(`data`, `sentences.txt`));
+  const CATEGORIES = await getData(path.join(`data`, `categories.txt`));
+
+  return Array(count).fill({}).map(() => ({
     category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
     description: shuffle(SENTENCES).slice(1, 5).join(` `),
     picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
     type: Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)],
     sum: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),
-  }))
-);
+  }));
+};
 
 module.exports = {
   name: `--generate`,
@@ -41,9 +46,9 @@ module.exports = {
       process.exit(ExitCode.EXIT);
     }
 
-    const content = JSON.stringify(generateOffers(countOffer));
-
     try {
+      const content = JSON.stringify(await generateOffers(countOffer));
+
       await writeFilePromise(FILE_NAME, content);
 
       console.log(chalk.green(`Operation success. File created.`));
