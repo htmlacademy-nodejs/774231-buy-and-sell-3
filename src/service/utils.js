@@ -1,7 +1,6 @@
 'use strict';
 
-const util = require(`util`);
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -18,15 +17,9 @@ const shuffle = (someArray) => {
   return someArray;
 };
 
-const readFilePromise = util.promisify((path, dataFormatter = (data) => data, cb) => {
-  fs.readFile(path, `utf8`, (err, data) => {
-    if (err) {
-      cb(err);
-    } else {
-      cb(null, dataFormatter(data));
-    }
-  });
-});
+const readFilePromise = async (path, dataFormatter = (data) => data) => {
+  return dataFormatter(await fs.readFile(path, `utf8`));
+};
 
 const dataFormatter = (data) => {
   return data.split(`\n`);
