@@ -62,3 +62,5 @@ module.exports = {
         });
   },
 };
+
+console.log(`Модуль 2 задание 3!`);
