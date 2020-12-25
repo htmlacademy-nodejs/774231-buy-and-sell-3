@@ -5,15 +5,15 @@ const {Router} = require(`express`);
 const myRouter = new Router();
 
 myRouter.get(`/`, (req, res) => {
-  res.send(req.originalUrl);
+  res.render(`main`);
 });
 
 myRouter.get(`/my`, (req, res) => {
-  res.send(req.originalUrl);
+  res.render(`my-tickets`);
 });
 
 myRouter.get(`/my/comments`, (req, res) => {
-  res.send(req.originalUrl);
+  res.render(`comments`);
 });
 
 module.exports = {
