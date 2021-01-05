@@ -1,0 +1,90 @@
+'use strict';
+
+const {Router} = require(`express`);
+const {HttpCode} = require(`../../constants`);
+const offerValidator = require(`../../middlewares/offer-validator`);
+const findOneOfferMiddleware = require(`../../middlewares/find-one-offer`);
+const commentValidator = require(`../../middlewares/comment-validator`);
+
+
+const offersRouter = new Router();
+
+module.exports = (appRouter, service) => {
+  appRouter.use(`/offers`, offersRouter);
+
+  offersRouter.get(`/`, (_, res) => {
+    const offers = service.findAll();
+
+    return res.status(HttpCode.OK).json(offers);
+  });
+
+  offersRouter.get(`/:offerId`, (req, res) => {
+    const {offerId} = req.params;
+
+    const findOffer = service.findOne(offerId);
+
+    if (!findOffer) {
+      return res.status(HttpCode.NOT_FOUND).send(`Not found with ${offerId}`);
+    }
+
+    return res.status(HttpCode.OK).json(findOffer);
+  });
+
+  offersRouter.post(`/`, offerValidator, (req, res) => {
+    const offer = service.create(req.body);
+
+    return res.status(HttpCode.CREATED)
+      .json(offer);
+
+  });
+
+  offersRouter.put(`/:offerId`, offerValidator, (req, res) => {
+    const {offerId} = req.params;
+
+    const editOffer = service.update(offerId, req.body);
+
+    if (!editOffer) {
+      return res.status(HttpCode.NOT_FOUND).send(`Not found with ${offerId}`);
+    }
+
+    return res.status(HttpCode.OK).json(editOffer);
+  });
+
+  offersRouter.delete(`/:offerId`, (req, res) => {
+    const {offerId} = req.params;
+
+    const deletedOffer = service.delete(offerId);
+
+    if (!deletedOffer) {
+      return res.status(HttpCode.NOT_FOUND).send(`Not found with ${offerId}`);
+    }
+
+    return res.status(HttpCode.OK).json(deletedOffer);
+  });
+
+  // comments
+
+  offersRouter.get(`/:offerId/comments`, findOneOfferMiddleware(service), (_, res) => {
+    const {offer} = res.locals;
+
+    const offerComments = service.findOneComment(offer);
+
+    return res.status(HttpCode.OK).json(offerComments);
+  });
+
+  offersRouter.post(`/:offerId/comments`, [findOneOfferMiddleware(service), commentValidator], (req, res) => {
+    const {offer} = res.locals;
+    const newComment = service.createComment(offer, req.body);
+
+    res.status(HttpCode.OK).json(newComment);
+  });
+
+  offersRouter.delete(`/:offerId/comments/:commentId`, findOneOfferMiddleware(service), (req, res) => {
+    const {offer} = res.locals;
+    const {commentId} = req.params;
+
+    service.deleteComment(offer, commentId);
+
+    res.status(HttpCode.OK).send(`Комментарий успешно удален!`);
+  });
+};
