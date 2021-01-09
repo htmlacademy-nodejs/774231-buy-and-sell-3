@@ -6,6 +6,9 @@ class SearchService {
   }
 
   getDataByQuery(query) {
+    if (query === ``) {
+      return [];
+    }
     return this._offers.filter((offer) => offer.title.toUpperCase().includes(query.toUpperCase()));
   }
 }

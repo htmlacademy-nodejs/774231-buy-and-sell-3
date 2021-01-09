@@ -31,7 +31,7 @@ module.exports = (appRouter, service) => {
   });
 
   offersRouter.post(`/`, offerValidator, (req, res) => {
-    const offer = service.create(req.body);
+    const offer = service.createOffer(req.body);
 
     return res.status(HttpCode.CREATED)
       .json(offer);
@@ -83,8 +83,12 @@ module.exports = (appRouter, service) => {
     const {offer} = res.locals;
     const {commentId} = req.params;
 
-    service.deleteComment(offer, commentId);
+    const deletedComment = service.deleteComment(offer, commentId);
 
-    res.status(HttpCode.OK).send(`Комментарий успешно удален!`);
+    if (!deletedComment) {
+      return res.status(HttpCode.NOT_FOUND).send(`Not found with comment ${commentId}`);
+    }
+
+    return res.status(HttpCode.OK).json({message: `Комментарий успешно удален!`, deletedComment});
   });
 };

@@ -21,7 +21,13 @@ class OfferService {
   }
 
   deleteComment(offer, id) {
-    const editOffer = offer;
+    const editOffer = {...offer};
+    const findComment = editOffer.comments.find((comment) => comment.id === id);
+
+    if (!findComment) {
+      return null;
+    }
+
     editOffer.comments = editOffer.comments.filter((comment) => comment.id !== id);
 
     this._offers = this._offers.map((item) => {
@@ -32,7 +38,7 @@ class OfferService {
       return item;
     });
 
-    return editOffer;
+    return findComment;
   }
 
   createComment(offer, comment) {
@@ -69,6 +75,10 @@ class OfferService {
   update(id, offer) {
     const oldOffer = this._offers
       .find((item) => item.id === id);
+
+    if (!oldOffer) {
+      return null;
+    }
 
     return Object.assign(oldOffer, offer);
   }

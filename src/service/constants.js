@@ -41,6 +41,11 @@ const OfferType = {
   SALE: `sale`,
 };
 
+const Env = {
+  DEVELOPMENT: `development`,
+  PRODUCTION: `production`
+};
+
 module.exports = {
   PictureRestrict,
   SumRestrict,
@@ -54,5 +59,6 @@ module.exports = {
   API_PREFIX,
   MAX_ID_LENGTH,
   OfferType,
+  Env,
   ExitCode,
 };
