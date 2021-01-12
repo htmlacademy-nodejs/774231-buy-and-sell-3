@@ -9,7 +9,6 @@ module.exports = (appRouter, service) => {
   appRouter.use(`/search`, searchRouter);
 
   searchRouter.get(`/`, (req, res) => {
-    console.log(`query: `, req.query.query);
     const searchData = service.getDataByQuery(req.query.query || ``);
 
     if (searchData.length === 0) {
