@@ -1,19 +1,26 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {ServiceRequestAPI} = require(`../../http-service`);
 
 const myRouter = new Router();
 
-myRouter.get(`/`, (req, res) => {
-  res.render(`main`);
+// Все публикации рендер шаблона
+myRouter.get(`/`, async (req, res) => {
+  const publications = await ServiceRequestAPI.getListOffers();
+  res.render(`main`, {publications});
 });
 
-myRouter.get(`/my`, (req, res) => {
-  res.render(`my-tickets`);
+// Личные публикации рендер шаблона
+myRouter.get(`/my`, async (req, res) => {
+  const publications = await ServiceRequestAPI.getListOffers();
+  res.render(`my-tickets`, {publications});
 });
 
-myRouter.get(`/my/comments`, (req, res) => {
-  res.render(`comments`);
+// Личные комментарии к публикации рендер шаблона
+myRouter.get(`/my/comments`, async (req, res) => {
+  const publications = await ServiceRequestAPI.getListOffers();
+  res.render(`comments`, {publications: publications.slice(0, 3)});
 });
 
 module.exports = {

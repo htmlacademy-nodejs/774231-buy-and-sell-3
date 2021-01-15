@@ -12,11 +12,15 @@ const offersRouter = new Router();
 module.exports = (appRouter, service) => {
   appRouter.use(`/offers`, offersRouter);
 
+  // список всех записей
+
   offersRouter.get(`/`, (_, res) => {
     const offers = service.findAll();
 
     return res.status(HttpCode.OK).json(offers);
   });
+
+  // получение отдельной записи
 
   offersRouter.get(`/:offerId`, (req, res) => {
     const {offerId} = req.params;
@@ -30,6 +34,8 @@ module.exports = (appRouter, service) => {
     return res.status(HttpCode.OK).json(findOffer);
   });
 
+  // создание
+
   offersRouter.post(`/`, offerValidator, (req, res) => {
     const offer = service.createOffer(req.body);
 
@@ -37,6 +43,8 @@ module.exports = (appRouter, service) => {
       .json(offer);
 
   });
+
+  // редактирование
 
   offersRouter.put(`/:offerId`, offerValidator, (req, res) => {
     const {offerId} = req.params;
@@ -49,6 +57,8 @@ module.exports = (appRouter, service) => {
 
     return res.status(HttpCode.OK).json(editOffer);
   });
+
+  // удаление
 
   offersRouter.delete(`/:offerId`, (req, res) => {
     const {offerId} = req.params;
