@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {ServiceRequestAPI} = require(`../../http-service`);
+const {ServiceRequestAPI} = require(`../../lib/http-service`);
 const {storage} = require(`../../lib/upload-storage`);
 const multer = require(`multer`);
 
@@ -15,11 +15,15 @@ offersRouter.get(`/category/:id`, (req, res) => {
 
 // Создание публикации рендер шаблона
 offersRouter.get(`/add`, (req, res) => {
-  res.render(`new-ticket`, {formData: {}});
+  res.render(`new-ticket`, {formData: {category: []}});
 });
 // Создание публикации обработчик запроса
 offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
   const {body, file} = req;
+
+  if (!body.category) {
+    body.category = [];
+  }
 
   const offerData = {
     picture: file ? file.filename : ``,
@@ -27,14 +31,15 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     type: body.action,
     description: body.comment,
     title: body[`ticket-name`],
-    category: body.category || [],
+    category: Array.isArray(body.category) ? body.category : [body.category],
   };
+
   try {
     await ServiceRequestAPI.createOffer(offerData);
     res.redirect(`/my`);
   } catch (err) {
     console.log(`err`, err);
-    res.redirect(`/offers/add`);
+    res.render(`new-ticket`, {formData: {...body}});
   }
 });
 

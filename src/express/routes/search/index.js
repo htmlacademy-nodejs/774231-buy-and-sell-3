@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {ServiceRequestAPI} = require(`../../http-service`);
+const {ServiceRequestAPI} = require(`../../lib/http-service`);
 
 const searchRouter = new Router();
 
