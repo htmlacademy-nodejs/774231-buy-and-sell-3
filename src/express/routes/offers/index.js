@@ -4,6 +4,7 @@ const {Router} = require(`express`);
 const {ServiceRequestAPI} = require(`../../lib/http-service`);
 const {storage} = require(`../../lib/upload-storage`);
 const multer = require(`multer`);
+const url = require(`url`);
 
 const offersRouter = new Router();
 const upload = multer({storage});
@@ -15,7 +16,7 @@ offersRouter.get(`/category/:id`, (req, res) => {
 
 // Создание публикации рендер шаблона
 offersRouter.get(`/add`, (req, res) => {
-  res.render(`new-ticket`, {formData: {category: []}});
+  res.render(`new-ticket`, {formData: {...req.query, category: JSON.parse(req.query.category || `[]`)}});
 });
 // Создание публикации обработчик запроса
 offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
@@ -39,7 +40,14 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     res.redirect(`/my`);
   } catch (err) {
     console.log(`err`, err);
-    res.render(`new-ticket`, {formData: {...body}});
+    res.redirect(url.format({
+      pathname: `/offers/add`,
+      query: {
+        ...body,
+        category: JSON.stringify([...body.category]),
+        file: file ? file.filename : ``,
+      },
+    }));
   }
 });
 

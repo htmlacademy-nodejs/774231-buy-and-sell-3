@@ -7,8 +7,9 @@ block content
         h1.ticket-form__title Новая публикация
         .ticket-form__tile
           form.ticket-form__form.form(action='#' method='post' enctype='multipart/form-data' autocomplete='off')
-            .ticket-form__avatar-container.js-preview-container
+            .ticket-form__avatar-container.js-preview-container(class=`${formData.file && formData.file !== '' ? 'uploaded' : ''}`)
                 .ticket-form__avatar.js-preview
+                  img(src=`/img/${formData.file}` alt="")
                 .ticket-form__field-avatar
                 input#avatar.visually-hidden.js-file-field(type='file' name='avatar')
                 label(for='avatar')
